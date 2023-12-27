@@ -1,6 +1,8 @@
 ---
 import { SearchBar } from '../features/search';
 import { SearchResults } from '../features/search-results';
+
+const search = Astro.url.searchParams.get('search') || '';
 ---
 
 <html lang="en">
@@ -16,7 +18,7 @@ import { SearchResults } from '../features/search-results';
   </head>
   <body>
     <h1 class="visually-hidden">DeoVR - Home Page</h1>
-    <SearchBar client:load />
+    <SearchBar client:load search={search} />
     <SearchResults client:load />
   </body>
 </html>

@@ -1,12 +1,17 @@
-import { createSignal, createResource } from "solid-js";
+import { createSignal, createResource, type Component } from "solid-js";
 
 import { getAutocompleteOptions, searchQueryStore } from "../model";
 import { InputWithAutocomplete } from "../../../shared/input-with-autocomplete";
 
 import classes from "./search-bar.module.css";
 
-export const SearchBar = () => {
-  const [searchQuery, setSearchQuery] = createSignal("");
+export const SearchBar: Component<{ search: string }> = (props) => {
+  const [searchQuery, setSearchQuery] = createSignal(props.search);
+
+  // I have no clue how this works. Tried it just for funsies.
+  setTimeout(() => {
+    searchQueryStore.set(searchQuery());
+  });
 
   let searchButtonRef: HTMLButtonElement | undefined;
 
@@ -21,6 +26,11 @@ export const SearchBar = () => {
   const handleSearchSubmit = (e: Event) => {
     e.preventDefault();
     searchQueryStore.set(searchQuery());
+    window.history.pushState(
+      {},
+      "",
+      `?search=${encodeURIComponent(searchQuery())}`
+    );
   };
 
   const [autocompleteOptions] = createResource(
