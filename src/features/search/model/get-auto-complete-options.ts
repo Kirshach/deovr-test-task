@@ -1,28 +1,4 @@
-const LATENCY = 300;
-
-const VOWELS = ["a", "e", "i", "o", "u"];
-const CONSONANTS = [
-  "b",
-  "c",
-  "d",
-  "f",
-  "g",
-  "h",
-  "j",
-  "k",
-  "l",
-  "m",
-  "n",
-  "p",
-  "q",
-  "r",
-  "s",
-  "t",
-  "v",
-  "w",
-  "x",
-  "z",
-];
+import { LATENCY, VOWELS, CONSONANTS } from "./constants";
 
 const generateSuggestion = (query: string) => {
   let newSuggestion = query;
@@ -30,7 +6,7 @@ const generateSuggestion = (query: string) => {
   while (0.07 < Math.random()) {
     const lastLetter = newSuggestion[newSuggestion.length - 1];
 
-    if (Math.random() < 0.1) {
+    if (lastLetter !== " " && Math.random() < 0.2) {
       newSuggestion += " ";
       continue;
     }

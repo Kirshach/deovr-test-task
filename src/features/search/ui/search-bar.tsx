@@ -3,8 +3,12 @@ import { createSignal, createResource } from "solid-js";
 import { getAutocompleteOptions, searchQueryStore } from "../model";
 import { InputWithAutocomplete } from "../../../shared/input-with-autocomplete";
 
+import classes from "./search-bar.module.css";
+
 export const SearchBar = () => {
   const [searchQuery, setSearchQuery] = createSignal("");
+
+  let searchButtonRef: HTMLButtonElement | undefined;
 
   const handleInputChange = (e: Event) => {
     if (!(e.target instanceof HTMLInputElement)) {
@@ -25,15 +29,33 @@ export const SearchBar = () => {
   );
 
   return (
-    <form onSubmit={handleSearchSubmit}>
-      <label for="TODO">Search</label>
-      <InputWithAutocomplete
-        placeholder="Search..."
-        value={searchQuery()}
-        onInput={handleInputChange}
-        autocompleteOptions={autocompleteOptions()}
-      />
-      <button type="submit">Search</button>
+    <form onSubmit={handleSearchSubmit} class={classes.form}>
+      <label for="video-search" class="visually-hidden">
+        Search
+      </label>
+      <img src="/deo-vr-logo.png" width="90" alt="" />
+      <div class={classes["input-wrapper"]}>
+        <InputWithAutocomplete
+          class={classes["search-input"]}
+          id="video-search"
+          placeholder="Search..."
+          value={searchQuery()}
+          setValue={setSearchQuery}
+          onInput={handleInputChange}
+          onSuggestionClick={() => {
+            searchButtonRef?.focus();
+          }}
+          autocompleteOptions={autocompleteOptions()}
+        />
+        <button
+          type="submit"
+          class={classes["search-button"]}
+          ref={searchButtonRef}
+        >
+          <span class="visually-hidden">Search</span>
+          <img src="/search-icon.svg" width="20" alt="" />
+        </button>
+      </div>
     </form>
   );
 };
