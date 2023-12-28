@@ -8,11 +8,6 @@ import classes from "./search-bar.module.css";
 export const SearchBar: Component<{ search: string }> = (props) => {
   const [searchQuery, setSearchQuery] = createSignal(props.search);
 
-  // I have no clue how this works. Tried it just for funsies.
-  setTimeout(() => {
-    searchQueryStore.set(searchQuery());
-  });
-
   let searchButtonRef: HTMLButtonElement | undefined;
 
   const handleInputChange = (e: Event) => {
@@ -38,12 +33,20 @@ export const SearchBar: Component<{ search: string }> = (props) => {
     getAutocompleteOptions
   );
 
+  // I have no clue how this works. Tried it just for funsies.
+  setTimeout(() => {
+    searchQueryStore.set(searchQuery());
+  });
+
   return (
     <form onSubmit={handleSearchSubmit} class={classes.form}>
       <label for="video-search" class="visually-hidden">
         Search
       </label>
-      <img src="/deo-vr-logo.png" width="90" alt="" />
+      <a href="/" class={classes["logo-link"]}>
+        <span class="visually-hidden">To main page</span>
+        <img src="/deo-vr-logo.png" width="90" alt="" />
+      </a>
       <div class={classes["input-wrapper"]}>
         <InputWithAutocomplete
           class={classes["search-input"]}

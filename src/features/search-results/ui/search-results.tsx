@@ -1,7 +1,7 @@
 import { createResource, For, Show } from "solid-js";
 import { useStore } from "@nanostores/solid";
 
-import { searchQueryStore } from "../../search";
+import { searchQueryStore } from "../../search-bar";
 import { searchResultsMock, formatDuration, formatDate } from "../model";
 
 import classes from "./search-results.module.css";

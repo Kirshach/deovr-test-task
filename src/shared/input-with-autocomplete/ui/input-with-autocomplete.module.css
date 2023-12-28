@@ -10,7 +10,9 @@
   border: 2px solid var(--bg-color-1);
 }
 
-.suggestions {
+.suggestions-list {
+  list-style: none;
+  padding: 0;
   position: absolute;
   width: 100%;
   border-radius: 0.5rem;

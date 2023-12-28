@@ -23,7 +23,7 @@ type Props = {
 export const InputWithAutocomplete: Component<Props> = (props) => {
   const [showSuggestions, setShowSuggestions] = createSignal(false);
 
-  let suggestionsRef: HTMLDivElement | undefined;
+  let suggestionsRef: HTMLOListElement | undefined;
   let inputRef: HTMLInputElement | undefined;
   let wrapperRef: HTMLDivElement | undefined;
 
@@ -112,15 +112,16 @@ export const InputWithAutocomplete: Component<Props> = (props) => {
         onInput={props.onInput}
       />
       <Show when={showSuggestions()}>
-        <div
-          class={classes.suggestions}
+        <ol
+          class={classes["suggestions-list"]}
           ref={suggestionsRef}
           aria-live="polite"
+          role="listbox"
         >
           <For each={props.autocompleteOptions}>
             {(option) => (
-              <div
-                role="button"
+              <li
+                role="option"
                 class={classes.suggestion}
                 onClick={() => {
                   setShowSuggestions(false);
@@ -130,10 +131,10 @@ export const InputWithAutocomplete: Component<Props> = (props) => {
                 tabIndex={0}
               >
                 {option}
-              </div>
+              </li>
             )}
           </For>
-        </div>
+        </ol>
       </Show>
     </div>
   );
