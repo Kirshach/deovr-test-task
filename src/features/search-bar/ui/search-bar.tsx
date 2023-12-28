@@ -5,8 +5,12 @@ import { InputWithAutocomplete } from "../../../shared/input-with-autocomplete";
 
 import classes from "./search-bar.module.css";
 
-export const SearchBar: Component<{ search: string }> = (props) => {
-  const [searchQuery, setSearchQuery] = createSignal(props.search);
+interface Props {
+  initialSearch: string;
+}
+
+export const SearchBar: Component<Props> = (props) => {
+  const [searchQuery, setSearchQuery] = createSignal(props.initialSearch);
 
   let searchButtonRef: HTMLButtonElement | undefined;
 
@@ -24,7 +28,15 @@ export const SearchBar: Component<{ search: string }> = (props) => {
     window.history.pushState(
       {},
       "",
-      `?search=${encodeURIComponent(searchQuery())}`
+      `?search=${encodeURIComponent(searchQuery())}${
+        window.location.search.includes("sort-by")
+          ? window.location.search
+              .slice(1)
+              .split("&")
+              .filter((param) => param.startsWith("sort-by="))
+              .join("&")
+          : ""
+      }`
     );
   };
 

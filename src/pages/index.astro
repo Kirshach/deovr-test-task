@@ -1,8 +1,9 @@
 ---
 import { SearchBar } from '../features/search-bar';
-import { SearchResults } from '../features/search-results';
+import { SearchResults, SORT_BY_OPTIONS } from '../features/search-results';
 
 const search = Astro.url.searchParams.get('search') || '';
+const sortBy = Astro.url.searchParams.get('sort-by') || SORT_BY_OPTIONS.MOST_RECENT;
 ---
 
 <html lang="en">
@@ -18,7 +19,7 @@ const search = Astro.url.searchParams.get('search') || '';
   </head>
   <body>
     <h1 class="visually-hidden">DeoVR - Home Page</h1>
-    <SearchBar client:load search={search} />
-    <SearchResults client:load />
+    <SearchBar client:load initialSearch={search} />
+    <SearchResults client:load initialSortBy={sortBy} />
   </body>
 </html>

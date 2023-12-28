@@ -1,4 +1,12 @@
-import { createResource, For, Show } from "solid-js";
+import {
+  createSignal,
+  createResource,
+  For,
+  Show,
+  type Component,
+  createEffect,
+  createMemo,
+} from "solid-js";
 import { useStore } from "@nanostores/solid";
 
 import { searchQueryStore } from "../../search-bar";
@@ -6,10 +14,46 @@ import { searchResultsMock, formatDuration, formatDate } from "../model";
 
 import classes from "./search-results.module.css";
 
-export const SearchResults = () => {
+export const SORT_BY_OPTIONS = {
+  MOST_RECENT: "most-recent",
+  OLDEST: "oldest",
+};
+
+interface Props {
+  initialSortBy: string;
+}
+
+export const SearchResults: Component<Props> = (props) => {
+  const [sortBy, setSortBy] = createSignal(props.initialSortBy);
   const searchQuery = useStore(searchQueryStore);
 
+  const handleSortByChange = (e: Event) => {
+    e.preventDefault();
+    searchQueryStore.set(searchQuery());
+    window.history.pushState(
+      {},
+      "",
+      `?search=${encodeURIComponent(searchQuery())}&sort-by=${sortBy()}`
+    );
+  };
   const [searchResults] = createResource(searchQuery, searchResultsMock);
+  const sortedResults = () => {
+    return searchResults()?.sort((a, b) => {
+      if (sortBy() === SORT_BY_OPTIONS.MOST_RECENT) {
+        return (
+          new Date(b.publish_date).getTime() -
+          new Date(a.publish_date).getTime()
+        );
+      }
+      if (sortBy() === SORT_BY_OPTIONS.OLDEST) {
+        return (
+          new Date(a.publish_date).getTime() -
+          new Date(b.publish_date).getTime()
+        );
+      }
+      return 0;
+    });
+  };
 
   return (
     <Show when={searchQuery() !== ""}>
@@ -17,14 +61,30 @@ export const SearchResults = () => {
         <h2 class={classes.heading}>Search results for "{searchQuery()}":</h2>
         <form class={classes["sort-by-group"]}>
           <legend>Sort by</legend>
-          <select>
-            <option value="most-recent">Most recent</option>
-            <option value="oldest">Oldest</option>
+          <select
+            name="sort-by"
+            onChange={(e) => {
+              setSortBy(e.target.value);
+              handleSortByChange(e);
+            }}
+          >
+            <option
+              value={SORT_BY_OPTIONS.MOST_RECENT}
+              selected={sortBy() === SORT_BY_OPTIONS.MOST_RECENT}
+            >
+              Most recent
+            </option>
+            <option
+              value={SORT_BY_OPTIONS.OLDEST}
+              selected={sortBy() === SORT_BY_OPTIONS.OLDEST}
+            >
+              Oldest
+            </option>
           </select>
         </form>
       </div>
       <div class={classes["results-container"]}>
-        <For each={searchResults()}>
+        <For each={sortedResults()}>
           {(result) => (
             <div class={classes["results-item"]}>
               <img
