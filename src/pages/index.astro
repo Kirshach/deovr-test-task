@@ -2,7 +2,7 @@
 import { SearchBar } from '../features/search-bar';
 import { SearchResults, SORT_BY_OPTIONS } from '../features/search-results';
 
-const search = Astro.url.searchParams.get('search') || '';
+const search = decodeURIComponent(Astro.url.searchParams.get('search') || '');
 const sortBy = Astro.url.searchParams.get('sort-by') || SORT_BY_OPTIONS.MOST_RECENT;
 ---
 
