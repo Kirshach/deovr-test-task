@@ -1,2 +1,2 @@
-export { searchQueryStore } from "./model/search-store";
+export { searchQueryStore } from "./model/stores";
 export { SearchBar } from "./ui";

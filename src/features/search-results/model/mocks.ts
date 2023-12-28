@@ -1,4 +1,4 @@
-export type VideoItem = {
+type VideoItem = {
   id: string;
   title: string;
   thumbnail: string;

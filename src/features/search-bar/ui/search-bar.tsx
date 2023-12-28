@@ -2,6 +2,7 @@ import { createSignal, createResource, type Component } from "solid-js";
 
 import { getAutocompleteOptions, searchQueryStore } from "../model";
 import { InputWithAutocomplete } from "../../../shared/input-with-autocomplete";
+import { updateUrlSearchParams } from "../../../shared/update-url-search-params";
 
 import classes from "./search-bar.module.css";
 
@@ -10,34 +11,17 @@ interface Props {
 }
 
 export const SearchBar: Component<Props> = (props) => {
+  let searchButtonRef: HTMLButtonElement | undefined;
   const [searchQuery, setSearchQuery] = createSignal(props.initialSearch);
 
-  let searchButtonRef: HTMLButtonElement | undefined;
-
   const handleInputChange = (e: Event) => {
-    if (!(e.target instanceof HTMLInputElement)) {
-      console.error("Event target is not an HTMLInputElement", e.target);
-      return;
-    }
-    setSearchQuery(e.target.value);
+    setSearchQuery((e.target as HTMLInputElement).value);
   };
 
   const handleSearchSubmit = (e: Event) => {
     e.preventDefault();
     searchQueryStore.set(searchQuery());
-    window.history.pushState(
-      {},
-      "",
-      `?search=${encodeURIComponent(searchQuery())}${
-        window.location.search.includes("sort-by")
-          ? window.location.search
-              .slice(1)
-              .split("&")
-              .filter((param) => param.startsWith("sort-by="))
-              .join("&")
-          : ""
-      }`
-    );
+    updateUrlSearchParams({ search: searchQuery() });
   };
 
   const [autocompleteOptions] = createResource(
@@ -45,7 +29,8 @@ export const SearchBar: Component<Props> = (props) => {
     getAutocompleteOptions
   );
 
-  // I have no clue how this works. Tried it just for funsies.
+  // I have no clue how this works
+  // But it's required to prevent hydration mismatch
   setTimeout(() => {
     searchQueryStore.set(searchQuery());
   });

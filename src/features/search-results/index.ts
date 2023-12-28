@@ -1,1 +1,2 @@
-export { SearchResults, SORT_BY_OPTIONS } from "./ui";
+export { SearchResults } from "./ui";
+export { SORT_BY_OPTIONS } from "./model";

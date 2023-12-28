@@ -4,8 +4,6 @@ import {
   For,
   Show,
   type Component,
-  createEffect,
-  createMemo,
 } from "solid-js";
 import { useStore } from "@nanostores/solid";
 
@@ -13,11 +11,9 @@ import { searchQueryStore } from "../../search-bar";
 import { searchResultsMock, formatDuration, formatDate } from "../model";
 
 import classes from "./search-results.module.css";
+import { updateUrlSearchParams } from "../../../shared/update-url-search-params";
 
-export const SORT_BY_OPTIONS = {
-  MOST_RECENT: "most-recent",
-  OLDEST: "oldest",
-};
+import { SORT_BY_OPTIONS } from "../model";
 
 interface Props {
   initialSortBy: string;
@@ -26,17 +22,14 @@ interface Props {
 export const SearchResults: Component<Props> = (props) => {
   const [sortBy, setSortBy] = createSignal(props.initialSortBy);
   const searchQuery = useStore(searchQueryStore);
+  const [searchResults] = createResource(searchQuery, searchResultsMock);
 
   const handleSortByChange = (e: Event) => {
     e.preventDefault();
     searchQueryStore.set(searchQuery());
-    window.history.pushState(
-      {},
-      "",
-      `?search=${encodeURIComponent(searchQuery())}&sort-by=${sortBy()}`
-    );
+    updateUrlSearchParams({ "sort-by": sortBy() });
   };
-  const [searchResults] = createResource(searchQuery, searchResultsMock);
+
   const sortedResults = () => {
     return searchResults()?.sort((a, b) => {
       if (sortBy() === SORT_BY_OPTIONS.MOST_RECENT) {
@@ -60,9 +53,10 @@ export const SearchResults: Component<Props> = (props) => {
       <div class={classes["top-bar"]}>
         <h2 class={classes.heading}>Search results for "{searchQuery()}":</h2>
         <form class={classes["sort-by-group"]}>
-          <legend>Sort by</legend>
+          <legend class={classes["sort-by-legend"]}>Sort by</legend>
           <select
             name="sort-by"
+            class={classes["sort-by-select"]}
             onChange={(e) => {
               setSortBy(e.target.value);
               handleSortByChange(e);

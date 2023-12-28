@@ -1,1 +1,1 @@
-export { SearchResults, SORT_BY_OPTIONS } from "./search-results";
+export { SearchResults } from "./search-results";
